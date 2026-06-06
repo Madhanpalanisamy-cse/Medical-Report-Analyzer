@@ -24,22 +24,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../front"), { index: false }));
 
-// Create uploads directory if not exists
-const os = require("os");
-const uploadsDir = process.env.VERCEL ? path.join(os.tmpdir(), "uploads") : path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// Multer Storage Configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-});
+// Multer Storage Configuration - Using Memory Storage for Serverless environments
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // JWT Verification Middleware
@@ -260,9 +246,11 @@ ${text}`;
       analysis = generateMockAnalysis(text, score, risk);
     }
 
-    // Clean up uploaded file
+    // Clean up uploaded file if disk storage was used
     try {
-      fs.unlinkSync(req.file.path);
+      if (req.file && req.file.path) {
+        fs.unlinkSync(req.file.path);
+      }
     } catch (fsErr) {
       console.warn("Could not delete temporary file:", fsErr.message);
     }

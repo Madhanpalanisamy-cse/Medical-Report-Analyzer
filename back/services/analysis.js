@@ -8,17 +8,16 @@ const Tesseract = require("tesseract.js");
  * @returns {Promise<string>} Extracted text
  */
 async function extractTextFromFile(file) {
-  const filePath = file.path;
+  const buffer = file.buffer || fs.readFileSync(file.path);
 
   if (file.mimetype === "application/pdf") {
-    const buffer = fs.readFileSync(filePath);
     const data = await pdfParse(buffer);
     return data.text;
   } else if (file.mimetype.startsWith("image/")) {
-    const result = await Tesseract.recognize(filePath, "eng");
+    const result = await Tesseract.recognize(buffer, "eng");
     return result.data.text;
   } else if (file.mimetype === "text/plain") {
-    return fs.readFileSync(filePath, "utf-8");
+    return buffer.toString("utf-8");
   } else {
     throw new Error("Unsupported file format. Please upload a PDF, image, or text file.");
   }
