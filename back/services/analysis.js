@@ -1,5 +1,6 @@
 const fs = require("fs");
 const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
+require("pdfjs-dist/legacy/build/pdf.worker.js"); // Force Vercel to bundle the worker
 const Tesseract = require("tesseract.js");
 
 /**
