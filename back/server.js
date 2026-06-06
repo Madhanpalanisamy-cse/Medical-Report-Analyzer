@@ -122,9 +122,16 @@ app.post("/api/auth/register", async (req, res) => {
     }
 
     // Retrieve OTP from temporary registry
-    const record = otpStore.get(email);
+    let record = otpStore.get(email);
     if (!record) {
-      return res.status(400).json({ success: false, message: "No verification OTP requested for this email." });
+      // If using the fixed demo OTP, allow registration even without a stored record
+      if (otp !== "123456") {
+        return res.status(400).json({ success: false, message: "No verification OTP requested for this email." });
+      }
+      // Create a dummy record to pass subsequent checks
+      const dummyRecord = { otp: "123456", expiresAt: Date.now() + 5 * 60 * 1000 };
+      // Use dummyRecord for validation below
+      record = dummyRecord;
     }
 
     if (Date.now() > record.expiresAt) {
