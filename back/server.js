@@ -58,8 +58,8 @@ app.post("/api/auth/send-otp", async (req, res) => {
       return res.status(400).json({ success: false, message: "A valid email address is required." });
     }
 
-    // Generate 6-digit OTP code
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Use fixed OTP for demo/testing
+    const otp = "123456"; // fixed value
     const expiresAt = Date.now() + 5 * 60 * 1000; // Code expires in 5 minutes
     otpStore.set(email, { otp, expiresAt });
 
