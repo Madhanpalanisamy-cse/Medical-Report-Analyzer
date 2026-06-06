@@ -562,8 +562,8 @@ app.use((req, res) => {
 
 
 
-// Start Server locally if not running on Vercel
-if (process.env.NODE_ENV !== 'production') {
+// Start Server locally or on Render (not on Vercel Serverless)
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 MedAI Vision Server running on http://localhost:${PORT}`);
   });
