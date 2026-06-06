@@ -571,3 +571,10 @@ if (!process.env.VERCEL) {
 
 // Export for Vercel serverless function
 module.exports = app;
+
+// Disable Vercel's default body parser so Multer can read the raw binary stream
+module.exports.config = {
+  api: {
+    bodyParser: false,
+  },
+};
