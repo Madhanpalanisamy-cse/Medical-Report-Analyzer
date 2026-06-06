@@ -25,7 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../front"), { index: false }));
 
 // Create uploads directory if not exists
-const uploadsDir = path.join(__dirname, "uploads");
+const os = require("os");
+const uploadsDir = process.env.VERCEL ? path.join(os.tmpdir(), "uploads") : path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
