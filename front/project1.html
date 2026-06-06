@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MedAI Vision</title>
+<link rel="stylesheet" href="project1.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="particles"></div>
+
+<div class="medical-icons">
+    <span>💊</span>
+    <span>🩺</span>
+    <span>❤️</span>
+    <span>🧬</span>
+</div>
+
+<header>
+
+<div class="logo">
+    🩺 MedAI Vision
+</div>
+
+<div class="toggle-container">
+    <label class="switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+    </label>
+</div>
+
+</header>
+
+<div class="container">
+
+<div class="glass-card" id="card">
+
+<h1>AI Medical Report Analyzer</h1>
+
+<p class="subtitle">
+Upload reports, analyze health data and chat with AI.
+</p>
+
+<form id="registerForm">
+
+<input
+type="text"
+id="name"
+placeholder="Full Name"
+required>
+
+<input
+type="email"
+id="email"
+placeholder="Email Address"
+required>
+
+<div class="password-box">
+
+<input
+type="password"
+id="password"
+placeholder="Password"
+required>
+
+<div class="strength-container">
+<div class="strength-bar"></div>
+</div>
+
+<p id="strengthText">
+Password Strength
+</p>
+
+</div>
+
+<div class="otp-row">
+
+<button
+type="button"
+class="otp-btn"
+id="sendOtpBtn">
+Send OTP
+</button>
+
+<input
+type="text"
+id="otp"
+placeholder="Enter OTP">
+
+</div>
+
+<button
+type="submit"
+class="register-btn">
+Register
+</button>
+
+</form>
+
+<div id="message"></div>
+
+<hr>
+
+<h2>Upload Medical Report</h2>
+
+<input
+type="file"
+id="reportFile">
+
+<button
+class="analyze-btn">
+Analyze Report
+</button>
+
+<div class="health-card">
+
+<h3>Health Score</h3>
+
+<div class="score-circle">
+85
+</div>
+
+<p>Risk Level: Low</p>
+
+</div>
+
+<hr>
+
+<div class="chat-section">
+
+<h2>Medical AI Assistant</h2>
+
+<div id="chatBox"></div>
+
+<div class="chat-input">
+
+<input
+type="text"
+id="userMessage"
+placeholder="Ask Medical AI...">
+
+<button id="sendBtn">
+Send
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="project1.js"></script>
+
+</body>
+</html>

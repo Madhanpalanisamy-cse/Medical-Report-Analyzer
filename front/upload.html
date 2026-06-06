@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MedAI Vision – Upload Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #00e5ff;
+      letter-spacing: -0.5px;
+    }
+    header p { color: #94a3b8; margin-top: 0.4rem; font-size: 0.95rem; }
+
+    .upload-card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .drop-zone {
+      border: 2px dashed rgba(0,229,255,0.4);
+      border-radius: 12px;
+      padding: 2.5rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      position: relative;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: #00e5ff;
+      background: rgba(0,229,255,0.05);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    }
+    .drop-icon { font-size: 2.5rem; margin-bottom: 0.6rem; }
+    .drop-zone p { color: #94a3b8; font-size: 0.9rem; }
+    .drop-zone .file-name { color: #00e5ff; margin-top: 0.5rem; font-weight: 500; font-size: 0.85rem; }
+
+    button#uploadBtn {
+      margin-top: 1.5rem;
+      width: 100%;
+      background: linear-gradient(90deg, #0284c7, #00e5ff);
+      color: #0f172a;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    button#uploadBtn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,229,255,0.3); }
+    button#uploadBtn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2px solid #0f172a; border-top-color: transparent;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Results */
+    .results {
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 520px;
+      display: none;
+    }
+    .score-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .score-box {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .score-box .label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .score-box .value { font-size: 1.8rem; font-weight: 700; }
+    .score-box.score .value { color: #00e5ff; }
+    .score-box.risk-low .value  { color: #22c55e; }
+    .score-box.risk-med .value  { color: #f97316; }
+    .score-box.risk-high .value { color: #ef4444; }
+
+    .analysis-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: left;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      max-height: 380px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+    }
+    .analysis-box h3 { color: #e2e8f0; font-size: 1rem; margin-bottom: 1rem; }
+
+    .download-btn {
+      display: block;
+      text-align: center;
+      background: rgba(0,229,255,0.15);
+      border: 1px solid rgba(0,229,255,0.4);
+      color: #00e5ff;
+      padding: 0.75rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+    .download-btn:hover { background: rgba(0,229,255,0.25); }
+
+    .error-msg {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #fca5a5;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🩺 MedAI Vision</h1>
+  <p>Upload your medical PDF report for AI-powered health analysis</p>
+</header>
+
+<div class="upload-card">
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="pdfInput" accept="application/pdf">
+    <div class="drop-icon">📄</div>
+    <p>Drag &amp; drop your PDF here, or click to browse</p>
+    <div class="file-name" id="fileName"></div>
+  </div>
+  <button id="uploadBtn">Upload &amp; Analyse</button>
+  <div class="error-msg" id="errorMsg" style="display:none;"></div>
+</div>
+
+<div class="results" id="results">
+  <div class="score-row">
+    <div class="score-box score">
+      <div class="label">Health Score</div>
+      <div class="value" id="scoreVal">—</div>
+    </div>
+    <div class="score-box" id="riskBox">
+      <div class="label">Risk Level</div>
+      <div class="value" id="riskVal">—</div>
+    </div>
+  </div>
+  <div class="analysis-box" id="analysisBox">
+    <h3>📋 AI Medical Analysis</h3>
+    <div id="analysisText"></div>
+  </div>
+  <a id="downloadLink" class="download-btn" href="#" target="_blank">⬇ Download PDF Report</a>
+</div>
+
+<script>
+  const uploadBtn  = document.getElementById('uploadBtn');
+  const pdfInput   = document.getElementById('pdfInput');
+  const dropZone   = document.getElementById('dropZone');
+  const fileName   = document.getElementById('fileName');
+  const errorMsg   = document.getElementById('errorMsg');
+  const results    = document.getElementById('results');
+  const scoreVal   = document.getElementById('scoreVal');
+  const riskVal    = document.getElementById('riskVal');
+  const riskBox    = document.getElementById('riskBox');
+  const analysisText = document.getElementById('analysisText');
+  const downloadLink = document.getElementById('downloadLink');
+
+  // Show selected file name
+  pdfInput.addEventListener('change', () => {
+    fileName.textContent = pdfInput.files[0] ? pdfInput.files[0].name : '';
+  });
+
+  // Drag and drop visual feedback
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+      pdfInput.files = e.dataTransfer.files;
+      fileName.textContent = pdfInput.files[0].name;
+    }
+  });
+
+  uploadBtn.addEventListener('click', async () => {
+    const file = pdfInput.files[0];
+    if (!file) {
+      showError('🚫 Please select a PDF file first.');
+      return;
+    }
+
+    // Reset UI
+    errorMsg.style.display = 'none';
+    results.style.display  = 'none';
+    uploadBtn.disabled = true;
+    uploadBtn.innerHTML = '<span class="spinner"></span>Analysing…';
+
+    const form = new FormData();
+    form.append('report', file);
+
+    try {
+      const resp = await fetch('/api/report/upload', {
+        method: 'POST',
+        body: form
+      });
+      const data = await resp.json();
+
+      if (data.success) {
+        // Populate score
+        scoreVal.textContent = (data.healthScore !== undefined ? data.healthScore : data.score) + '/100';
+
+        // Populate risk with colour
+        const risk = data.riskLevel || data.risk || 'Low';
+        riskVal.textContent = risk;
+        riskBox.className = 'score-box risk-' + risk.toLowerCase();
+
+        // Populate analysis (strip markdown for plain display)
+        const raw = data.analysis || 'No analysis returned.';
+        analysisText.textContent = raw
+          .replace(/\*\*/g, '')
+          .replace(/###/g, '')
+          .replace(/####/g, '');
+
+        // Download link
+        const pdfUrl = data.pdfUrl ||
+          `/api/pdf/download?score=${data.healthScore || data.score}&risk=${risk}&analysis=${encodeURIComponent(data.analysis || '')}&reportName=${encodeURIComponent(file.name)}`;
+        downloadLink.href = pdfUrl;
+
+        results.style.display = 'block';
+      } else {
+        showError('❗ ' + (data.message || 'Upload failed.'));
+      }
+    } catch (err) {
+      console.error(err);
+      showError('❗ Network error – make sure the server is running.');
+    } finally {
+      uploadBtn.disabled = false;
+      uploadBtn.innerHTML = 'Upload &amp; Analyse';
+    }
+  });
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = 'block';
+  }
+</script>
+</body>
+</html>

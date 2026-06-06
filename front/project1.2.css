@@ -1,0 +1,93 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#0ea5e9);
+    background-size:400% 400%;
+    animation:bg 10s ease infinite;
+    color:white;
+    padding:30px;
+}
+
+@keyframes bg{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+.card{
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+h1{
+    font-size:3rem;
+    color:#00e5ff;
+    margin-bottom:15px;
+}
+
+h2{
+    margin-bottom:15px;
+    color:#7dd3fc;
+}
+
+input,button{
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin:8px;
+}
+
+input{
+    width:250px;
+}
+
+button{
+    background:#00e5ff;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    background:#38bdf8;
+}
+
+.score{
+    font-size:50px;
+    color:#22c55e;
+    font-weight:bold;
+}
+
+.chat-box{
+    height:300px;
+    overflow-y:auto;
+    background:rgba(0,0,0,0.2);
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.message{
+    background:#1e40af;
+    padding:10px;
+    border-radius:10px;
+    margin:8px 0;
+}

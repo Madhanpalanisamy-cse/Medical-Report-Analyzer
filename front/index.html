@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedAI Vision - Advanced Medical Report Intelligence</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Markdown parser for Gemini text formatting -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="dark-theme">
+
+  <!-- Interactive AI Particle Background Canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Premium Floating Medical Icons (💊 🩺 ❤️ 🧬) -->
+  <div class="floating-icons">
+    <div class="floating-icon-item item-1">💊</div>
+    <div class="floating-icon-item item-2">🩺</div>
+    <div class="floating-icon-item item-3">❤️</div>
+    <div class="floating-icon-item item-4">🧬</div>
+    <div class="floating-icon-item item-5">💊</div>
+    <div class="floating-icon-item item-6">🩺</div>
+    <div class="floating-icon-item item-7">❤️</div>
+    <div class="floating-icon-item item-8">🧬</div>
+  </div>
+
+  <!-- Glow Background Accents -->
+  <div class="glow-bg glow-1"></div>
+  <div class="glow-bg glow-2"></div>
+
+  <!-- Main Container -->
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">🩺</span>
+          <span class="logo-text">MedAI <span class="accent">Vision</span></span>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="nav-item active" data-tab="dashboard">
+            <span class="nav-icon">📊</span> Dashboard
+          </li>
+          <li class="nav-item" data-tab="upload">
+            <span class="nav-icon">📤</span> Analyze Report
+          </li>
+          <li class="nav-item" data-tab="chat">
+            <span class="nav-icon">💬</span> AI Consultation
+          </li>
+          <li class="nav-item" data-tab="history">
+            <span class="nav-icon">📅</span> Medical History
+          </li>
+          <li class="nav-item" data-tab="auth" id="authTabBtn">
+            <span class="nav-icon">👤</span> Account / Log In
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="theme-toggle-container">
+          <span class="toggle-label">☀️ Light</span>
+          <label class="switch">
+            <input type="checkbox" id="themeToggle" checked>
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">Dark 🌙</span>
+        </div>
+        <div class="user-pill" id="userPill">
+          <div class="user-avatar">G</div>
+          <div class="user-info">
+            <p class="user-name" id="userPillName">Guest Mode</p>
+            <p class="user-role">Patient</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- HEADER -->
+      <header class="content-header">
+        <h1 id="viewTitle">Dashboard Overview</h1>
+        <p id="viewSubtitle" class="text-secondary">Welcome back to your personalized healthcare analytics control center.</p>
+      </header>
+
+      <!-- TABS/VIEWS CONTAINER -->
+      <div class="view-container">
+
+        <!-- VIEW 1: DASHBOARD OVERVIEW -->
+        <section id="view-dashboard" class="tab-view active">
+          
+          <!-- Metrics Grid -->
+          <div class="metrics-grid">
+            
+            <div class="metric-card glass-card">
+              <div class="metric-header">
+                <span class="metric-title">Reports Analyzed</span>
+                <span class="metric-icon">📄</span>
+              </div>
+              <div class="metric-value" id="metricCount">0</div>
+              <div class="metric-footer text-secondary">Uploaded documents</div>
+            </div>
+
+            <div class="metric-card glass-card">
+              <div class="metric-header">
+                <span class="metric-title">Average Health Score</span>
+                <span class="metric-icon">❤️</span>
+              </div>
+              <div class="metric-value-container">
+                <div class="metric-value" id="metricScore">--</div>
+                <div class="score-indicator-bar">
+                  <div class="score-indicator-fill" id="metricScoreFill" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="metric-footer text-secondary" id="metricScoreLabel">No records found</div>
+            </div>
+
+            <div class="metric-card glass-card">
+              <div class="metric-header">
+                <span class="metric-title">Risk Analysis Summary</span>
+                <span class="metric-icon">⚠️</span>
+              </div>
+              <div class="metric-value font-risk" id="metricRisk">--</div>
+              <div class="metric-footer text-secondary" id="metricRiskLabel">No medical risk evaluated</div>
+            </div>
+
+          </div>
+
+          <!-- Chart & Quick Summary Row -->
+          <div class="dashboard-row">
+            
+            <div class="dashboard-col col-8 glass-card">
+              <div class="col-header">
+                <h3>Health Score Trend</h3>
+                <p class="text-secondary">Visual progress tracking across multiple checkups</p>
+              </div>
+              <div class="chart-container">
+                <canvas id="healthChart"></canvas>
+                <div class="chart-empty-state" id="chartEmpty">
+                  <p>📈 Upload a medical report to generate a health score graph.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="dashboard-col col-4 glass-card">
+              <div class="col-header">
+                <h3>Quick Action Hub</h3>
+              </div>
+              <div class="action-buttons-stack">
+                <button class="btn btn-primary btn-full" onclick="switchTab('upload')">
+                  📤 Upload & Analyze Document
+                </button>
+                <button class="btn btn-secondary btn-full" onclick="switchTab('chat')">
+                  💬 Start Consultation Chat
+                </button>
+                <button class="btn btn-outline btn-full" onclick="switchTab('history')">
+                  📅 Open Medical Folders
+                </button>
+              </div>
+              <div class="insights-box">
+                <h4>🛡️ Clinical AI Disclosure</h4>
+                <p>AI interpretations are designed for health education, terminology explanations, and patient support. They should be evaluated alongside a medical specialist.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Recent Activity Table Section -->
+          <div class="glass-card table-card">
+            <div class="col-header">
+              <h3>Recent Analysis Logs</h3>
+            </div>
+            <div class="table-container">
+              <table id="recentTable">
+                <thead>
+                  <tr>
+                    <th>Report Name</th>
+                    <th>Date Analyzed</th>
+                    <th>Health Score</th>
+                    <th>Risk Category</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recentTableBody">
+                  <tr>
+                    <td colspan="5" class="text-center text-secondary">No report data. Please upload a report to begin analysis.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- VIEW 2: ANALYZE REPORT -->
+        <section id="view-upload" class="tab-view">
+          
+          <div class="upload-container">
+            <!-- Upload Area -->
+            <div class="glass-card upload-dropzone" id="dropzone">
+              <div class="dropzone-content">
+                <div class="dropzone-icon">📁</div>
+                <h3>Drag & Drop your Medical Report</h3>
+                <p class="text-secondary">Supports PDF documents and report images (PNG, JPG, TIFF)</p>
+                <div class="file-input-wrapper">
+                  <button class="btn btn-secondary">Browse Files</button>
+                  <input type="file" id="reportFile" accept=".pdf,image/*,.txt">
+                </div>
+                <div class="selected-file-info" id="fileInfo"></div>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="btn btn-primary btn-lg" id="analyzeBtn" disabled>
+                ✨ Extract & Analyze Report
+              </button>
+            </div>
+
+            <!-- Loader Progress -->
+            <div class="analysis-loader-container glass-card hidden" id="analysisLoader">
+              <div class="pulse-loader">🩺</div>
+              <h3 id="loaderStatus">Reading uploaded document...</h3>
+              <div class="loader-progress-bar">
+                <div class="loader-progress-fill" id="loaderFill" style="width: 10%"></div>
+              </div>
+              <p class="text-secondary" id="loaderSubText">Extracting structured clinical data</p>
+            </div>
+
+            <!-- Results Display -->
+            <div class="analysis-results-card glass-card hidden" id="analysisResults">
+              <div class="results-header">
+                <div class="results-meta">
+                  <h2 id="resultReportName">BloodTest_May2026.pdf</h2>
+                  <p class="text-secondary" id="resultDate">Analyzed on June 5, 2026</p>
+                </div>
+                <div class="results-actions">
+                  <button class="btn btn-outline" id="downloadPdfBtn">
+                    📥 Download PDF Summary
+                  </button>
+                </div>
+              </div>
+
+              <div class="results-dashboard">
+                <div class="results-stat-box">
+                  <span class="stat-label">Calculated Score</span>
+                  <div class="score-circle-container">
+                    <svg viewBox="0 0 36 36" class="circular-chart-svg">
+                      <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      <path class="circle-fill" id="resultScoreCircle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <div class="score-circle-text" id="resultScoreVal">--</div>
+                  </div>
+                </div>
+
+                <div class="results-stat-box">
+                  <span class="stat-label">Severity Assessment</span>
+                  <div class="risk-badge" id="resultRiskVal">--</div>
+                  <p class="text-secondary" id="resultRiskDescription">Determined by clinical marker scanning</p>
+                </div>
+              </div>
+
+              <hr class="divider">
+
+              <div class="results-narrative">
+                <h3>🤖 Detailed AI Evaluation</h3>
+                <div class="markdown-body" id="resultAnalysisText">
+                  <!-- Generated response goes here -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- VIEW 3: AI CONSULTATION CHAT -->
+        <section id="view-chat" class="tab-view">
+          
+          <div class="chat-layout glass-card">
+            
+            <!-- Context Indicator -->
+            <div class="chat-context-banner" id="chatContextBanner">
+              <div class="context-info">
+                <span class="pulse-dot"></span>
+                <span id="chatContextText">Active AI consult (General Mode)</span>
+              </div>
+              <button class="btn-text" id="clearContextBtn" style="display: none;">Clear context</button>
+            </div>
+
+            <!-- Chat Message Window -->
+            <div class="chat-messages-container" id="chatMessages">
+              
+              <!-- System Welcome message -->
+              <div class="message-bubble bot-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                  <p>Hello! I am your MedAI Vision Consultant. You can ask me to explain health terminology, values on your lab report, or general health concerns.</p>
+                  <p class="disclaimer-text">Reminder: I am an AI assistant. My advice is for educational use and does not replace checking with your clinician.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Suggested Questions list -->
+            <div class="chat-suggestions" id="chatSuggestions">
+              <span class="suggestion-tag" data-q="What is HbA1c and what ranges are normal?">What is HbA1c?</span>
+              <span class="suggestion-tag" data-q="What is the difference between LDL and HDL cholesterol?">LDL vs HDL</span>
+              <span class="suggestion-tag" data-q="What details are on a standard Blood Count (CBC) report?">Understanding CBC</span>
+              <span class="suggestion-tag" data-q="How can high blood pressure affect cardiac health?">Hypertension Risks</span>
+            </div>
+
+            <!-- Input bar -->
+            <div class="chat-input-container">
+              <input type="text" id="chatInput" placeholder="Ask a question about your report values..." maxlength="1000">
+              <button class="btn btn-primary" id="chatSendBtn">Send 📤</button>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- VIEW 4: MEDICAL HISTORY -->
+        <section id="view-history" class="tab-view">
+          
+          <div class="glass-card table-card">
+            <div class="col-header filter-header">
+              <h3>Medical Folder Archives</h3>
+              <div class="filter-actions">
+                <input type="text" id="historySearch" class="search-input" placeholder="Search by name...">
+              </div>
+            </div>
+            
+            <div class="table-container">
+              <table id="historyTable">
+                <thead>
+                  <tr>
+                    <th>Report Details</th>
+                    <th>Upload Date</th>
+                    <th>Health Rating</th>
+                    <th>Risk Category</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <tr>
+                    <td colspan="5" class="text-center text-secondary">Retrieving clinical records...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- VIEW 5: USER AUTH / ACCOUNT -->
+        <section id="view-auth" class="tab-view">
+          
+          <div class="auth-layout">
+            
+            <!-- Auth form card -->
+            <div class="glass-card auth-card" id="authCard">
+              
+              <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tabLoginBtn">Sign In</button>
+                <button class="auth-tab-btn" id="tabRegisterBtn">Register</button>
+              </div>
+
+              <!-- LOGIN FORM -->
+              <form id="loginForm" class="auth-form-body">
+                <h3>Welcome back</h3>
+                <p class="text-secondary">Log in to sync reports and chat history securely</p>
+                
+                <div class="form-group">
+                  <label for="loginEmail">Email Address</label>
+                  <input type="email" id="loginEmail" placeholder="you@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                  <label for="loginPassword">Password</label>
+                  <input type="password" id="loginPassword" placeholder="Enter password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full btn-lg">Log In</button>
+              </form>
+
+              <!-- REGISTER FORM -->
+              <form id="registerForm" class="auth-form-body hidden">
+                <h3>Create an Account</h3>
+                <p class="text-secondary">Register to start managing your health reports</p>
+                
+                <div class="form-group">
+                  <label for="regName">Full Name</label>
+                  <input type="text" id="regName" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="regEmail">Email Address</label>
+                  <input type="email" id="regEmail" placeholder="john@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                  <label for="regPassword">Password</label>
+                  <input type="password" id="regPassword" placeholder="Minimum 6 characters" required>
+                  
+                  <div class="strength-meter">
+                    <div class="strength-meter-bar" id="strengthMeterFill"></div>
+                  </div>
+                  <span class="strength-label text-secondary" id="strengthMeterLabel">Password Strength</span>
+                </div>
+
+                <div class="otp-auth-group">
+                  <button type="button" class="btn btn-secondary" id="sendOtpBtn">Send Verification OTP</button>
+                  <input type="text" id="otpVal" placeholder="6-Digit OTP" disabled>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full btn-lg" id="registerSubmitBtn" disabled>
+                  Complete Registration
+                </button>
+              </form>
+
+              <div class="auth-msg-box" id="authMessage"></div>
+
+            </div>
+
+            <!-- PROFILE VIEW (When logged in) -->
+            <div class="glass-card auth-card hidden" id="profileCard">
+              <div class="profile-header">
+                <div class="profile-avatar" id="profileInitials">JD</div>
+                <h2 id="profileName">John Doe</h2>
+                <p class="text-secondary" id="profileEmail">john@example.com</p>
+              </div>
+              <hr class="divider">
+              <div class="profile-meta">
+                <div class="meta-row">
+                  <span>Account Status</span>
+                  <span class="badge badge-success">Verified</span>
+                </div>
+                <div class="meta-row">
+                  <span>Data Protection</span>
+                  <span>AES-256 Encrypted</span>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-full" id="logoutBtn">Log Out Securely</button>
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- DETAILS DIALOG MODAL (For historical report view) -->
+  <div class="modal-overlay hidden" id="reportModal">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h2 id="modalReportName">BloodTest_Report.pdf</h2>
+        <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="results-dashboard">
+          <div class="results-stat-box">
+            <span class="stat-label">Health Score</span>
+            <div class="score-circle-text score-circle-large" id="modalScoreVal">--</div>
+          </div>
+          <div class="results-stat-box">
+            <span class="stat-label">Severity Level</span>
+            <div class="risk-badge" id="modalRiskVal">--</div>
+          </div>
+        </div>
+        <hr class="divider">
+        <h3>🤖 AI Analysis Text</h3>
+        <div class="markdown-body" id="modalAnalysisText"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="modalDownloadPdfBtn">📥 Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
