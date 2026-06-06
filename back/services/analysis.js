@@ -1,5 +1,5 @@
 const fs = require("fs");
-const pdfParse = require("pdf-parse");
+const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
 const Tesseract = require("tesseract.js");
 
 /**
@@ -11,8 +11,15 @@ async function extractTextFromFile(file) {
   const buffer = file.buffer || fs.readFileSync(file.path);
 
   if (file.mimetype === "application/pdf") {
-    const data = await pdfParse(buffer);
-    return data.text;
+    const data = new Uint8Array(buffer);
+    const doc = await pdfjsLib.getDocument({ data }).promise;
+    let text = "";
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(" ") + "\n";
+    }
+    return text;
   } else if (file.mimetype.startsWith("image/")) {
     const result = await Tesseract.recognize(buffer, "eng");
     return result.data.text;
