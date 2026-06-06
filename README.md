@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MedAI Vision - Advanced Full-Stack AI Medical Report Analyzer
 
 MedAI Vision is a state-of-the-art medical report intelligence dashboard built with Node.js, Express.js, MySQL, Google Gemini AI API, Tesseract OCR, and pdf-parse. It features a premium, responsive Glassmorphism design complete with interactive background particles, floating clinical icons, animated gradient borders, 3D card tilt rotation effects, and dynamic light/dark theme toggles.
